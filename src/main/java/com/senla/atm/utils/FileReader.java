@@ -10,8 +10,6 @@ import java.util.List;
 
 public class FileReader {
     public static List<String> readFile(String fileName) {
-        // TODO: 20/11/2022 Need to add logging 
-        
         List<String> lines = new ArrayList<>();
         ClassLoader classLoader = FileReader.class.getClassLoader();
         InputStream inputStream = classLoader.getResourceAsStream(fileName);
@@ -30,5 +28,23 @@ public class FileReader {
             System.out.println("File with name" + fileName + " cannot be read: " + e.getMessage());
         }
         return lines;
+    }
+    public static Double readAtmBalance(String fileName){
+        double AtmBalance = 0;
+        ClassLoader classLoader = FileReader.class.getClassLoader();
+        InputStream inputStream = classLoader.getResourceAsStream(fileName);
+
+        if (inputStream == null) {
+            throw new IllegalArgumentException("File with name " + fileName + " cannot be found!");
+        }
+
+        try (InputStreamReader streamReader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
+             BufferedReader reader = new BufferedReader(streamReader)) {
+            AtmBalance = Double.parseDouble(reader.readLine());
+        } catch (IOException e){
+            System.out.println("File with name" + fileName + " cannot be read: " + e.getMessage());
+        }
+
+        return AtmBalance;
     }
 }

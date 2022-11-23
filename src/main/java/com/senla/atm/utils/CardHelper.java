@@ -9,10 +9,16 @@ public class CardHelper {
         card.setOwner(cardValues[0]);
         card.setNumber(cardValues[1]);
         card.setPin(Integer.parseInt(cardValues[2]));
-        card.setCvv(Integer.parseInt(cardValues[3]));
-        card.setBalance(Double.parseDouble(cardValues[4]));
-        card.setValidityPeriod(cardValues[5]);
-        card.setStatus(Boolean.parseBoolean(cardValues[6]));
+        card.setBalance(Double.parseDouble(cardValues[3]));
+        card.setStatus(Boolean.parseBoolean(cardValues[4]));
         return card;
+    }
+
+    public static String parseEntityToString(Card card){
+        return card.getOwner() + " "
+            + card.getNumber() + " "
+            + card.getPin() + " "
+            + card.getBalance() + " "
+            + card.isStatus();
     }
 }

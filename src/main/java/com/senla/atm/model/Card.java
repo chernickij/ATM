@@ -4,22 +4,18 @@ public class Card {
     private String owner;
     private String number;
     private int pin;
-    private int cvv;
     private double balance;
-    private String validityPeriod;
     private boolean status;
 
     public Card() {
 
     }
 
-    public Card(String owner, String number, int pin, int cvv, double balance, String validityPeriod, boolean status) {
+    public Card(String owner, String number, int pin, double balance, boolean status) {
         this.owner = owner;
         this.number = number;
         this.pin = pin;
-        this.cvv = cvv;
         this.balance = balance;
-        this.validityPeriod = validityPeriod;
         this.status = status;
     }
 
@@ -47,28 +43,12 @@ public class Card {
         this.pin = pin;
     }
 
-    public int getCvv() {
-        return cvv;
-    }
-
-    public void setCvv(int cvv) {
-        this.cvv = cvv;
-    }
-
     public double getBalance() {
         return balance;
     }
 
     public void setBalance(double balance) {
         this.balance = balance;
-    }
-
-    public String getValidityPeriod() {
-        return validityPeriod;
-    }
-
-    public void setValidityPeriod(String validityPeriod) {
-        this.validityPeriod = validityPeriod;
     }
 
     public boolean isStatus() {
@@ -85,9 +65,7 @@ public class Card {
             "owner='" + owner + '\'' +
             ", number='" + number + '\'' +
             ", pin=" + pin +
-            ", cvv=" + cvv +
             ", balance=" + balance +
-            ", validityPeriod='" + validityPeriod + '\'' +
             ", status=" + status +
             '}';
     }
