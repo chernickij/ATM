@@ -2,7 +2,6 @@ package com.senla.atm.dao;
 
 import com.senla.atm.model.Card;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -11,7 +10,7 @@ public interface CardDao {
 
     Optional<Card> getByNumber(String number);
 
-    void update(Card card);
+    Card update(Card card);
 
     void updateFileData();
 }

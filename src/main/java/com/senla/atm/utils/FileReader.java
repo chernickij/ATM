@@ -29,22 +29,4 @@ public class FileReader {
         }
         return lines;
     }
-    public static Double readAtmBalance(String fileName){
-        double AtmBalance = 0;
-        ClassLoader classLoader = FileReader.class.getClassLoader();
-        InputStream inputStream = classLoader.getResourceAsStream(fileName);
-
-        if (inputStream == null) {
-            throw new IllegalArgumentException("File with name " + fileName + " cannot be found!");
-        }
-
-        try (InputStreamReader streamReader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
-             BufferedReader reader = new BufferedReader(streamReader)) {
-            AtmBalance = Double.parseDouble(reader.readLine());
-        } catch (IOException e){
-            System.out.println("File with name" + fileName + " cannot be read: " + e.getMessage());
-        }
-
-        return AtmBalance;
-    }
 }

@@ -1,11 +1,11 @@
 package com.senla.atm.dao;
 
+import com.senla.atm.model.BalanceOperation;
+
 public interface AtmDao {
     Double getAtmBalance();
 
-    void decreaseBalance(Double balance);
-
-    void increaseBalance(Double balance);
+    void updateBalance(BalanceOperation operation, Double sum);
 
     void updateAtmBalance();
 }

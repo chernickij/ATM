@@ -1,6 +1,7 @@
 package com.senla.atm.utils;
 
 import com.senla.atm.model.Card;
+import java.util.regex.Pattern;
 
 public class CardHelper {
     public static Card parseStringToEntity(String str){
@@ -10,7 +11,7 @@ public class CardHelper {
         card.setNumber(cardValues[1]);
         card.setPin(Integer.parseInt(cardValues[2]));
         card.setBalance(Double.parseDouble(cardValues[3]));
-        card.setStatus(Boolean.parseBoolean(cardValues[4]));
+        card.setBlocked(Boolean.parseBoolean(cardValues[4]));
         return card;
     }
 
@@ -19,6 +20,15 @@ public class CardHelper {
             + card.getNumber() + " "
             + card.getPin() + " "
             + card.getBalance() + " "
-            + card.isStatus();
+            + card.isBlocked();
+    }
+
+    public static boolean checkNumberFormat(String cardNumber) {
+        return Pattern.matches("^\\d{4}-\\d{4}-\\d{4}-\\d{4}$", cardNumber);
+    }
+
+    public static boolean checkPinFormat(int pin) {
+        int numDigits = String.valueOf(pin).length();
+        return numDigits == 4;
     }
 }

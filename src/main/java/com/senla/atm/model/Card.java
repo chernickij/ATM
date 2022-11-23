@@ -5,18 +5,18 @@ public class Card {
     private String number;
     private int pin;
     private double balance;
-    private boolean status;
+    private boolean blocked;
 
     public Card() {
 
     }
 
-    public Card(String owner, String number, int pin, double balance, boolean status) {
+    public Card(String owner, String number, int pin, double balance, boolean blocked) {
         this.owner = owner;
         this.number = number;
         this.pin = pin;
         this.balance = balance;
-        this.status = status;
+        this.blocked = blocked;
     }
 
     public String getOwner() {
@@ -51,12 +51,12 @@ public class Card {
         this.balance = balance;
     }
 
-    public boolean isStatus() {
-        return status;
+    public boolean isBlocked() {
+        return blocked;
     }
 
-    public void setStatus(boolean status) {
-        this.status = status;
+    public void setBlocked(boolean blocked) {
+        this.blocked = blocked;
     }
 
     @Override
@@ -66,7 +66,7 @@ public class Card {
             ", number='" + number + '\'' +
             ", pin=" + pin +
             ", balance=" + balance +
-            ", status=" + status +
+            ", blocked=" + blocked +
             '}';
     }
 }
