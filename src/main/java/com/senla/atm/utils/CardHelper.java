@@ -1,6 +1,7 @@
 package com.senla.atm.utils;
 
 import com.senla.atm.model.Card;
+import com.senla.atm.model.CardStatus;
 
 import java.time.LocalDateTime;
 import java.util.regex.Pattern;
@@ -13,7 +14,7 @@ public class CardHelper {
         card.setNumber(cardValues[1]);
         card.setPin(Integer.parseInt(cardValues[2]));
         card.setBalance(Double.parseDouble(cardValues[3]));
-        card.setBlocked(Boolean.parseBoolean(cardValues[4]));
+        card.setStatus(CardStatus.valueOf(cardValues[4]));
         card.setBlockTime(!cardValues[5].equals("null") ? LocalDateTime.parse(cardValues[5]) : null);
         return card;
     }
@@ -23,7 +24,7 @@ public class CardHelper {
             + card.getNumber() + " "
             + card.getPin() + " "
             + card.getBalance() + " "
-            + card.isBlocked() + " "
+            + card.getStatus() + " "
             + card.getBlockTime();
     }
 

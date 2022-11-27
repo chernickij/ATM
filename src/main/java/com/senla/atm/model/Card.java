@@ -7,19 +7,19 @@ public class Card {
     private String number;
     private int pin;
     private double balance;
-    private boolean blocked;
+    private CardStatus status;
     private LocalDateTime blockTime;
 
     public Card() {
 
     }
 
-    public Card(String owner, String number, int pin, double balance, boolean blocked, LocalDateTime blockTime) {
+    public Card(String owner, String number, int pin, double balance, CardStatus status, LocalDateTime blockTime) {
         this.owner = owner;
         this.number = number;
         this.pin = pin;
         this.balance = balance;
-        this.blocked = blocked;
+        this.status = status;
         this.blockTime = blockTime;
     }
 
@@ -55,12 +55,12 @@ public class Card {
         this.balance = balance;
     }
 
-    public boolean isBlocked() {
-        return blocked;
+    public CardStatus getStatus() {
+        return status;
     }
 
-    public void setBlocked(boolean blocked) {
-        this.blocked = blocked;
+    public void setStatus(CardStatus status) {
+        this.status = status;
     }
 
     public LocalDateTime getBlockTime() {
@@ -78,7 +78,7 @@ public class Card {
             ", number='" + number + '\'' +
             ", pin=" + pin +
             ", balance=" + balance +
-            ", blocked=" + blocked +
+            ", status=" + status +
             '}';
     }
 }

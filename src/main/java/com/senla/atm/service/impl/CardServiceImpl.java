@@ -47,21 +47,6 @@ public class CardServiceImpl implements CardService {
         return userCard;
     }
 
-    private void checkBlockStatus(Card card) {
-        if (card.isBlocked()) {
-            if (isBlockTimeExpired(card)) {
-                changeCardStatus(card, CardStatus.UNBLOCKED);
-                System.out.println("Your card has been unlocked.");
-            } else {
-                throw new CardBlockedException("You cannot login, your card is blocked. Please try again later.");
-            }
-        }
-    }
-
-    private boolean isBlockTimeExpired(Card card) {
-        return Duration.between(card.getBlockTime(), LocalDateTime.now()).toHours() >= 24;
-    }
-
     public Card withdraw(Card card) {
         System.out.println("Enter the amount of currency you want to withdraw.");
         double withdrawMoney = inputWithdraw(card);
@@ -103,6 +88,21 @@ public class CardServiceImpl implements CardService {
             cardNumber = scanner.nextLine();
         }
         return cardNumber;
+    }
+
+    private void checkBlockStatus(Card card) {
+        if (card.getStatus().equals(CardStatus.BLOCKED)) {
+            if (isBlockTimeExpired(card)) {
+                changeCardStatus(card, CardStatus.UNBLOCKED);
+                System.out.println("Your card has been unlocked.");
+            } else {
+                throw new CardBlockedException("You cannot login, your card is blocked. Please try again later.");
+            }
+        }
+    }
+
+    private boolean isBlockTimeExpired(Card card) {
+        return Duration.between(card.getBlockTime(), LocalDateTime.now()).toHours() >= 24;
     }
 
     private void checkCardPin(Card card) {
@@ -152,11 +152,11 @@ public class CardServiceImpl implements CardService {
 
     private void changeCardStatus(Card card, CardStatus status) {
         if (status.equals(CardStatus.BLOCKED)) {
-            card.setBlocked(true);
+            card.setStatus(status);
             card.setBlockTime(LocalDateTime.now());
         } else {
             card.setBlockTime(null);
-            card.setBlocked(false);
+            card.setStatus(status);
         }
         cardDao.update(card);
     }
