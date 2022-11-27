@@ -5,12 +5,19 @@ import static com.senla.atm.utils.CardHelper.checkPinFormat;
 
 import com.senla.atm.dao.AtmDao;
 import com.senla.atm.dao.CardDao;
+import com.senla.atm.exception.CardBlockedException;
+import com.senla.atm.exception.CardNotFoundException;
 import com.senla.atm.model.BalanceOperation;
 import com.senla.atm.model.Card;
 
+import com.senla.atm.model.CardStatus;
 import com.senla.atm.service.CardService;
+
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.InputMismatchException;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Scanner;
 
 public class CardServiceImpl implements CardService {
@@ -30,15 +37,29 @@ public class CardServiceImpl implements CardService {
         if (Objects.equals(cardNumber, "0")) {
             return null;
         }
-        Card userCard = cardDao.getByNumber(cardNumber).orElse(null);
-        if(userCard.isBlocked()) {
-            System.out.println("You cannot login, your card is blocked.");
-            return null;
+        Optional<Card> optionalCard = cardDao.getByNumber(cardNumber);
+        if (optionalCard.isEmpty()) {
+            throw new CardNotFoundException("You are not authorized. The card with this number was not found in the bank's register.");
         }
-        if (checkCardPin(userCard) == 0) {
-            return null;
-        }
+        Card userCard = optionalCard.get();
+        checkBlockStatus(userCard);
+        checkCardPin(userCard);
         return userCard;
+    }
+
+    private void checkBlockStatus(Card card) {
+        if (card.isBlocked()) {
+            if (isBlockTimeExpired(card)) {
+                changeCardStatus(card, CardStatus.UNBLOCKED);
+                System.out.println("Your card has been unlocked.");
+            } else {
+                throw new CardBlockedException("You cannot login, your card is blocked. Please try again later.");
+            }
+        }
+    }
+
+    private boolean isBlockTimeExpired(Card card) {
+        return Duration.between(card.getBlockTime(), LocalDateTime.now()).toHours() >= 24;
     }
 
     public Card withdraw(Card card) {
@@ -67,14 +88,13 @@ public class CardServiceImpl implements CardService {
         return card;
     }
 
-
     public void updateFileData() {
         cardDao.updateFileData();
     }
 
-    private String inputCardNumber(){
+    private String inputCardNumber() {
         String cardNumber = scanner.nextLine();
-        while(!checkNumberFormat(cardNumber)){
+        while (!checkNumberFormat(cardNumber)) {
             if (cardNumber.equals("0")) {
                 return "0";
             }
@@ -85,9 +105,9 @@ public class CardServiceImpl implements CardService {
         return cardNumber;
     }
 
-    private int checkCardPin(Card card) {
+    private void checkCardPin(Card card) {
         int attempts = 0;
-        int enteredPin = 0;
+        int enteredPin;
         while (attempts < 3) {
             enteredPin = inputCardPin();
             if (enteredPin == card.getPin()) {
@@ -99,14 +119,10 @@ public class CardServiceImpl implements CardService {
             attempts++;
             System.out.println("Wrong pin, attempts left:" + (3 - attempts));
             if (attempts == 3) {
-                System.out.println("Your card is blocked for 24 hours.\n");
-                blockCard(card);
-                enteredPin = 0;
-                break;
+                changeCardStatus(card, CardStatus.BLOCKED);
+                throw new CardBlockedException("Your card is blocked for 24 hours.");
             }
         }
-
-        return enteredPin;
     }
 
     private int inputCardPin() {
@@ -134,24 +150,30 @@ public class CardServiceImpl implements CardService {
         return enteredPin;
     }
 
-    private void blockCard(Card card){
-        card.setBlocked(true);
+    private void changeCardStatus(Card card, CardStatus status) {
+        if (status.equals(CardStatus.BLOCKED)) {
+            card.setBlocked(true);
+            card.setBlockTime(LocalDateTime.now());
+        } else {
+            card.setBlockTime(null);
+            card.setBlocked(false);
+        }
         cardDao.update(card);
     }
 
-    private Double inputWithdraw(Card card){
+    private Double inputWithdraw(Card card) {
         double withdrawMoney = 0;
         boolean isRepeat = true;
-        while(isRepeat){
+        while (isRepeat) {
             try {
                 isRepeat = false;
                 scanner = new Scanner(System.in);
                 withdrawMoney = scanner.nextDouble();
-            } catch (InputMismatchException e){
+            } catch (InputMismatchException e) {
                 System.out.println("Wrong format. Please, enter the numbers.");
                 isRepeat = true;
             }
-            if(withdrawMoney > card.getBalance()){
+            if (withdrawMoney > card.getBalance()) {
                 System.out.println("Insufficient funds on the card, try again.");
                 isRepeat = true;
             }
@@ -159,20 +181,20 @@ public class CardServiceImpl implements CardService {
         return withdrawMoney;
     }
 
-    private Double inputDeposit(){
+    private Double inputDeposit() {
         double deposit = 0;
         double limit = 1000000;
         boolean isRepeat = true;
-        while(isRepeat){
+        while (isRepeat) {
             try {
                 isRepeat = false;
                 scanner = new Scanner(System.in);
                 deposit = scanner.nextDouble();
-            } catch (InputMismatchException e){
+            } catch (InputMismatchException e) {
                 System.out.println("Wrong format. Please, enter the numbers.");
                 isRepeat = true;
             }
-            if(deposit > limit){
+            if (deposit > limit) {
                 System.out.println("Deposit cannot exceed 1000000, try again.");
                 isRepeat = true;
             }

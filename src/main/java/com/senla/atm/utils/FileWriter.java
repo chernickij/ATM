@@ -9,7 +9,7 @@ import java.io.OutputStream;
 public class FileWriter {
     public static void writeToFile(String value, String fileName) {
         File file = new File("src/main/resources/" + fileName);
-        try{
+        try {
             OutputStream os = new FileOutputStream(file.getAbsoluteFile(), false);
             os.write(value.getBytes(), 0, value.length());
             os.close();

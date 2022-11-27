@@ -9,7 +9,7 @@ public class AtmDaoImpl implements AtmDao {
     private static final String ATM_BALANCE_FILE_NAME = "atm_balance.txt";
     private double atmBalance;
 
-    public AtmDaoImpl(){
+    public AtmDaoImpl() {
         this.atmBalance = Double.parseDouble(FileReader.readFile(ATM_BALANCE_FILE_NAME).get(0));
     }
 
@@ -24,8 +24,6 @@ public class AtmDaoImpl implements AtmDao {
             this.atmBalance = atmBalance + sum;
         } else if (operation.equals(BalanceOperation.DECREASE)) {
             this.atmBalance = atmBalance - sum;
-        } else {
-            //todo smth went wrong exception
         }
     }
 

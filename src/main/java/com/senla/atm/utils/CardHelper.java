@@ -1,10 +1,12 @@
 package com.senla.atm.utils;
 
 import com.senla.atm.model.Card;
+
+import java.time.LocalDateTime;
 import java.util.regex.Pattern;
 
 public class CardHelper {
-    public static Card parseStringToEntity(String str){
+    public static Card parseStringToEntity(String str) {
         String[] cardValues = str.split(" ");
         Card card = new Card();
         card.setOwner(cardValues[0]);
@@ -12,15 +14,17 @@ public class CardHelper {
         card.setPin(Integer.parseInt(cardValues[2]));
         card.setBalance(Double.parseDouble(cardValues[3]));
         card.setBlocked(Boolean.parseBoolean(cardValues[4]));
+        card.setBlockTime(!cardValues[5].equals("null") ? LocalDateTime.parse(cardValues[5]) : null);
         return card;
     }
 
-    public static String parseEntityToString(Card card){
+    public static String parseEntityToString(Card card) {
         return card.getOwner() + " "
             + card.getNumber() + " "
             + card.getPin() + " "
             + card.getBalance() + " "
-            + card.isBlocked();
+            + card.isBlocked() + " "
+            + card.getBlockTime();
     }
 
     public static boolean checkNumberFormat(String cardNumber) {
